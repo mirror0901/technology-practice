@@ -1,0 +1,11 @@
+参考 https://www.cnblogs.com/gongcong/p/9261204.html
+
+synchronized修饰实例方法及实例方法内的代码块时对应的是对象锁
+synchronized修饰类方法及类方法内的代码块时对应的是类锁
+synchronized分别修饰实例方法和类方法使用的是不同的锁
+
+Lock锁
+    Lock作为Java提供的一个接口，功能类似synchronized同步，但是功能比synchronized强大，可以精细化控制读写、可以响应中断、可以实现线程公平获取锁等；
+    1.Lock接口的6个方法
+        lock作为接口提供了公共抽象方法,方法功能分为获取锁、释放锁、新建锁条件3类，
+        其中获取锁分 阻塞式获取 和 分阻塞 获取， 阻塞式获取分为能够响应
