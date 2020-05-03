@@ -81,7 +81,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("mirror95")
+                .withClient("mirror")
                 .secret(new BCryptPasswordEncoder().encode("123"))
                 .resourceIds("res1")
                 .authorizedGrantTypes("authorization_code", "refresh_token")

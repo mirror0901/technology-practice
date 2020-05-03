@@ -33,11 +33,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
                 .withUser("huang")
                 .password(passwordEncoder().encode("123"))
-                .roles("admin")
+                .roles("user")
                 .and()
                 .withUser("mirror")
                 .password(new BCryptPasswordEncoder().encode("123"))
-                .roles("user");
+                .roles("admin");
     }
 
     @Override
