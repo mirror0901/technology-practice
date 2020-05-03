@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>秩明网络科技</title>
+</head>
+<body>
+您好,莎莉马儿!
+<a href="http://localhost:8080/oauth/authorize?client_id=mirror&response_type=code&scope=all&redirect_uri=http://localhost:8082/index.html">第三方登录</a>
+<!--
+    h1 标签中的数据是来自资源服务器的，
+    当授权服务器通过后，我们拿着 access_token 去资源服务器加载数据，
+    加载到的数据就在 h1 标签中显示出来。
+-->
+<h1 th:text="${msg}"></h1>
+</body>
+</html>

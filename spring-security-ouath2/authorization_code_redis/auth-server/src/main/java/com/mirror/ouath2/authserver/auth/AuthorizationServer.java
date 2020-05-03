@@ -32,8 +32,6 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Autowired
     TokenStore tokenStore;
     @Autowired
-    ClientDetailsService clientDetailsService;
-    @Autowired
     DataSource dataSource;
 
     @Bean
@@ -50,13 +48,12 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Bean
     AuthorizationServerTokenServices tokenServices() {
         DefaultTokenServices services = new DefaultTokenServices();
-        services.setClientDetailsService(clientDetailsService);
+        services.setClientDetailsService(clientDetailsService());
         services.setSupportRefreshToken(true);
         services.setTokenStore(tokenStore);
-        services.setAccessTokenValiditySeconds(60 * 60 * 2);
-        services.setRefreshTokenValiditySeconds(60 * 60 * 24 * 3);
         return services;
     }
+
     @Bean
     AuthorizationCodeServices authorizationCodeServices() {
         return new InMemoryAuthorizationCodeServices();
@@ -88,16 +85,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-
         clients.withClientDetails(clientDetailsService());
-
-//        clients.inMemory()
-//                .withClient("mirror")
-//                .secret(new BCryptPasswordEncoder().encode("123"))
-//                .resourceIds("res1")
-//                .authorizedGrantTypes("authorization_code", "refresh_token")
-//                .scopes("all")
-//                .redirectUris("http://localhost:8082/index.html");
     }
 
     /**

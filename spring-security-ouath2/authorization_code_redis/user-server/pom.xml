@@ -8,10 +8,10 @@
         <version>2.2.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.mirror.ouath2</groupId>
-    <artifactId>auth-server</artifactId>
+    <groupId>com.mirror.oauth2</groupId>
+    <artifactId>user-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>auth-server</name>
+    <name>user-server</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -32,18 +32,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
