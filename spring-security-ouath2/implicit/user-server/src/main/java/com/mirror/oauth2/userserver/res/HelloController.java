@@ -1,5 +1,6 @@
 package com.mirror.oauth2.userserver.res;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @description:
  * @create: 2020-05-02 21:53
  **/
+@CrossOrigin(value = "*")
 @RestController
 public class HelloController {
 
