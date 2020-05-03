@@ -3,6 +3,8 @@ package com.mirror.ouath2.authserver.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -34,12 +36,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Autowired
     ClientDetailsService clientDetailsService;
     @Autowired
-    DataSource dataSource;
-
-    @Bean
-    ClientDetailsService clientDetailsService() {
-        return new JdbcClientDetailsService(dataSource);
-    }
+    AuthenticationManager authenticationManager;
 
     /**
      * 主要用来配置 Token 的一些基本信息，
@@ -57,10 +54,11 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         services.setRefreshTokenValiditySeconds(60 * 60 * 24 * 3);
         return services;
     }
-    @Bean
-    AuthorizationCodeServices authorizationCodeServices() {
-        return new InMemoryAuthorizationCodeServices();
-    }
+
+//    @Bean
+//    AuthorizationCodeServices authorizationCodeServices() {
+//        return new InMemoryAuthorizationCodeServices();
+//    }
 
     /**
      * 用来配置令牌端点的安全约束，也就是这个端点谁能访问，谁不能访问。
@@ -89,15 +87,13 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
-        clients.withClientDetails(clientDetailsService());
-
-//        clients.inMemory()
-//                .withClient("mirror")
-//                .secret(new BCryptPasswordEncoder().encode("123"))
-//                .resourceIds("res1")
-//                .authorizedGrantTypes("authorization_code", "refresh_token")
-//                .scopes("all")
-//                .redirectUris("http://localhost:8082/index.html");
+        clients.inMemory()
+                .withClient("mirror")
+                .secret(new BCryptPasswordEncoder().encode("123"))
+                .resourceIds("res1")
+                .authorizedGrantTypes("password", "refresh_token")
+                .scopes("all")
+                .redirectUris("http://localhost:8082/index.html");
     }
 
     /**
@@ -111,9 +107,8 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
      */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.authorizationCodeServices(authorizationCodeServices())
+        endpoints.authenticationManager(authenticationManager)
                 .tokenServices(tokenServices());
     }
-
 
 }
