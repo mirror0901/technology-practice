@@ -3,20 +3,19 @@ package com.mirror.ouath2.authserver.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
-import javax.sql.DataSource;
 
 /**
  * @author: mirror_huang
@@ -33,13 +32,6 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     TokenStore tokenStore;
     @Autowired
     ClientDetailsService clientDetailsService;
-    @Autowired
-    DataSource dataSource;
-
-    @Bean
-    ClientDetailsService clientDetailsService() {
-        return new JdbcClientDetailsService(dataSource);
-    }
 
     /**
      * 主要用来配置 Token 的一些基本信息，
@@ -57,6 +49,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         services.setRefreshTokenValiditySeconds(60 * 60 * 24 * 3);
         return services;
     }
+
     @Bean
     AuthorizationCodeServices authorizationCodeServices() {
         return new InMemoryAuthorizationCodeServices();
@@ -89,15 +82,13 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
-        clients.withClientDetails(clientDetailsService());
-
-//        clients.inMemory()
-//                .withClient("mirror")
-//                .secret(new BCryptPasswordEncoder().encode("123"))
-//                .resourceIds("res1")
-//                .authorizedGrantTypes("authorization_code", "refresh_token")
-//                .scopes("all")
-//                .redirectUris("http://localhost:8082/index.html");
+        clients.inMemory()
+                .withClient("mirror")
+                .secret(new BCryptPasswordEncoder().encode("123"))
+                .resourceIds("res1")
+                .authorizedGrantTypes("client_credentials", "refresh_token")
+                .scopes("all")
+                .redirectUris("http://localhost:8082/index.html");
     }
 
     /**
