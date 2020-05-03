@@ -3,6 +3,7 @@ package com.mirror.ouath2.authserver.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -14,9 +15,12 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeServic
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
 
 /**
  * @author: mirror_huang
@@ -32,9 +36,13 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Autowired
     TokenStore tokenStore;
     @Autowired
-    ClientDetailsService clientDetailsService;
-    @Autowired
     DataSource dataSource;
+    @Autowired
+    JwtAccessTokenConverter jwtAccessTokenConverter;
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
+    CustomAdditionalInformation customAdditionalInformation;
 
     @Bean
     ClientDetailsService clientDetailsService() {
@@ -50,16 +58,15 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Bean
     AuthorizationServerTokenServices tokenServices() {
         DefaultTokenServices services = new DefaultTokenServices();
-        services.setClientDetailsService(clientDetailsService);
+        services.setClientDetailsService(clientDetailsService());
         services.setSupportRefreshToken(true);
         services.setTokenStore(tokenStore);
-        services.setAccessTokenValiditySeconds(60 * 60 * 2);
-        services.setRefreshTokenValiditySeconds(60 * 60 * 24 * 3);
+
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(jwtAccessTokenConverter, customAdditionalInformation));
+        services.setTokenEnhancer(tokenEnhancerChain);
+
         return services;
-    }
-    @Bean
-    AuthorizationCodeServices authorizationCodeServices() {
-        return new InMemoryAuthorizationCodeServices();
     }
 
     /**
@@ -88,16 +95,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-
         clients.withClientDetails(clientDetailsService());
-
-//        clients.inMemory()
-//                .withClient("mirror")
-//                .secret(new BCryptPasswordEncoder().encode("123"))
-//                .resourceIds("res1")
-//                .authorizedGrantTypes("authorization_code", "refresh_token")
-//                .scopes("all")
-//                .redirectUris("http://localhost:8082/index.html");
     }
 
     /**
@@ -112,8 +110,13 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authorizationCodeServices(authorizationCodeServices())
+                .authenticationManager(authenticationManager)
                 .tokenServices(tokenServices());
     }
 
+    @Bean
+    AuthorizationCodeServices authorizationCodeServices() {
+        return new InMemoryAuthorizationCodeServices();
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.mirror.ouath2.authserver.auth;
+package com.mirror.oauth2.userserver.res;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
