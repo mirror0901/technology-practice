@@ -22,10 +22,13 @@ public class MyAuthenticationProvider extends DaoAuthenticationProvider {
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String code = request.getParameter("code");
-        String verify_code = (String) request.getSession().getAttribute("verify_code");
-        if (StringUtils.isEmpty(code) || !Objects.equals(code, verify_code)) {
+//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//        String code = request.getParameter("code");
+//        String verify_code = (String) request.getSession().getAttribute("verify_code");
+//        if (StringUtils.isEmpty(code) || !Objects.equals(code, verify_code)) {
+//            throw new AuthenticationServiceException("验证码错误");
+//        }
+        if (!((MyWebAuthenticationDetails) authentication.getDetails()).isPassed()) {
             throw new AuthenticationServiceException("验证码错误");
         }
         super.additionalAuthenticationChecks(userDetails, authentication);
