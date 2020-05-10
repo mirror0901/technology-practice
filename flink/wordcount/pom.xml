@@ -9,7 +9,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <flink.version>1.2.0</flink.version>
+        <flink.version>1.10.0</flink.version>
+<!--        <flink.version>1.2.0</flink.version>-->
     </properties>
 
     <dependencies>
@@ -30,6 +31,13 @@
             <artifactId>flink-clients_2.11</artifactId>
             <version>${flink.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-streaming-scala_2.11</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>
