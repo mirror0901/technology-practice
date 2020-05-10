@@ -19,7 +19,7 @@ public class WordCountStream {
     public static void main(String[] args) throws Exception {
         //1.初始化流计算的环境
         final StreamExecutionEnvironment executionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment();
-        executionEnvironment.setParallelism(2);
+        executionEnvironment.setParallelism(1);
         //2.读取数据，读取sock流中的数据
         final DataStream<String> dataStream = executionEnvironment.socketTextStream("192.168.95.22", 8888);
         //3.转换和处理数据
