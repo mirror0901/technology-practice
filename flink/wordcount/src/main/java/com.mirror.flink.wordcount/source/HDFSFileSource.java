@@ -13,15 +13,16 @@ import org.apache.flink.util.Collector;
  * @qq: 1755496180
  * @description:
  * @create: 2020-05-12 21:36
+ * TODO:未试验成功
  **/
 public class HDFSFileSource {
 
     public static void main(String[] args) throws Exception {
         //1.初始化流计算的环境
         final StreamExecutionEnvironment executionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment();
-        executionEnvironment.setParallelism(1);
+        //executionEnvironment.setParallelism(1);
         //2.读取HDFS文件系统上的文件
-        final DataStreamSource<String> stringDataStreamSource = executionEnvironment.readTextFile("hdfs://192.168.95.22:8022/words2.txt");
+        final DataStreamSource<String> stringDataStreamSource = executionEnvironment.readTextFile("hdfs://192.168.95.22:8022/hadoop-env.sh");
 
         //单词统计的计算
         final SingleOutputStreamOperator<Tuple2<String, Integer>> sum = stringDataStreamSource.flatMap(new Splitter())

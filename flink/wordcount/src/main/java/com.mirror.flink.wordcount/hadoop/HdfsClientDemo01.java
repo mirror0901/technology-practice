@@ -28,7 +28,7 @@ public class HdfsClientDemo01 {
         //4.构造客户端
         FileSystem fs = FileSystem.get(new URI("hdfs://192.168.95.22:8022/"), conf, "root");
         //5.上传文件
-        fs.copyFromLocalFile(new Path("C:\\data\\wordcount.txt"), new Path("/words4.txt"));
+        fs.copyFromLocalFile(new Path("C:\\data\\wordcount.txt"), new Path("/words5.txt"));
 
         //6.关闭资源
         fs.close();
