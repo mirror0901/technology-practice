@@ -19,10 +19,10 @@ public class KafkaSource {
     public static void main(String[] args) throws Exception {
         //1.初始化流计算的环境
         final StreamExecutionEnvironment executionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment();
-        //executionEnvironment.setParallelism(1);
+        executionEnvironment.setParallelism(2);
         Properties properties = new Properties();
         properties.setProperty("bootstrap.servers", "docker2:32782");
-        properties.setProperty("group.id", "test");
+        properties.setProperty("group.id", "flink");
         properties.setProperty("key.deserializer", StringDeserializer.class.getName());
         properties.setProperty("value.deserializer", StringDeserializer.class.getName());
         properties.setProperty("auto.offset.reset", "latest");
