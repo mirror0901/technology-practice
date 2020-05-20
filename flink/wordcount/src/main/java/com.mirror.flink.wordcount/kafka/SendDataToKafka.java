@@ -19,7 +19,7 @@ public class SendDataToKafka {
 
     public void send(String topic, String key, String data) {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.95.22:32782");
+        props.put("bootstrap.servers", "192.168.95.22:32768");
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("batch.size", 16384);
