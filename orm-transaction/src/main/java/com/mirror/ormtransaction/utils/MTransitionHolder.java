@@ -13,7 +13,7 @@ import java.sql.Connection;
  **/
 //交给spring去管理
 @Component
-public class MTransctionHolder {
+public class MTransitionHolder {
 
     /**
      * 本来线程不安全的，通过ThreadLocal这么封装一下，立马就变成线程的局部变量，

@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * @create: 2020-06-23 01:29
  **/
 @Component
-public class MTranstionManager {
+public class MTransitionManager {
 
     /**
      * 开始事务

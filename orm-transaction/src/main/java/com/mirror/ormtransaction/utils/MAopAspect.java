@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
-import java.util.Objects;
 
 /**
  * @author: mirror_huang
@@ -24,13 +23,13 @@ public class MAopAspect {
      * 注入获取连接
      */
     @Autowired
-    private MTransctionHolder transctionHolder;
+    private MTransitionHolder transitionHolder;
 
     /**
      * 注入事务管理
      */
     @Autowired
-    private MTranstionManager transtionManager;
+    private MTransitionManager transitionManager;
 
     /**
      * 说明：
@@ -46,31 +45,31 @@ public class MAopAspect {
     @Around(value = "@annotation(mTransction)")
     public Object txAroundOption(ProceedingJoinPoint proceedingJoinPoint, MTransction mTransction) {
         //开始获取连接
-        Connection connection = transctionHolder.getConnection();
+        Connection connection = transitionHolder.getConnection();
 
         Object proceed = null;
 
         try {
             //开始执行前开启事务管理
-            transtionManager.startTx(connection);
+            transitionManager.startTx(connection);
 
             //开始执行操作
             proceed = proceedingJoinPoint.proceed();
 
             //执行之后提交事务
-            transtionManager.commitTx(connection);
+            transitionManager.commitTx(connection);
 
         } catch (Exception e) {
             e.printStackTrace();
             //回滚事务
-            transtionManager.rollBackTx(connection);
+            transitionManager.rollBackTx(connection);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
             //回滚事务
-            transtionManager.rollBackTx(connection);
+            transitionManager.rollBackTx(connection);
         } finally {
             //关闭事务
-            transtionManager.closeTx(connection);
+            transitionManager.closeTx(connection);
         }
 
         return proceed;
