@@ -23,7 +23,7 @@ import java.util.Map;
 @Component
 public class InvokeClassAdapter {
 
-    public <T> T invokeObject(ResultSet resultSet, Class<T> clazz) {
+    public static <T> T invokeObject(ResultSet resultSet, Class<T> clazz) {
         Map<String, Field> map = new HashMap<>(64);
         try {
 

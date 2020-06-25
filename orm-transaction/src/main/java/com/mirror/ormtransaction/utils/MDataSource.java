@@ -20,7 +20,7 @@ import java.sql.SQLException;
 @PropertySource(value = "classpath:/application.properties")
 public class MDataSource {
 
-    @Value("${spring.datasource.driver}")
+    @Value("${spring.datasource.driver-class-name}")
     public String driver;
 
     @Value("${spring.datasource.url}")
