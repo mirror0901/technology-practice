@@ -33,7 +33,7 @@ public class BarServiceImpl implements BarService {
     public void hasTransactional() throws RollbackException {
 
         // REQUIRED传播属性-调用者有事务,抛异常 被调用者无异常
-        fooService.testRequiredNoException();
+        //fooService.testRequiredNoException();
 
         // SUPPORT传播属性-调用者有事务,抛异常 被调用者无异常
         //fooService.testSupportsNoException();
@@ -42,7 +42,7 @@ public class BarServiceImpl implements BarService {
         //fooService.testMandatoryNoException();
 
         // REQUIRES_NEW传播属性-调用者有事务,抛异常 被调用者无异常
-        //fooService.testRequiresNewNoException();
+        fooService.testRequiresNewNoException();
 
         // NOT_SUPPORTED传播属性-调用者有事务,抛异常 被调用者无异常
         //fooService.testNotSupportNoException();
@@ -63,7 +63,7 @@ public class BarServiceImpl implements BarService {
     public void noTransactional() throws RollbackException {
 
         // REQUIRED传播属性-调用者无事务,不抛异常 被调用者有异常
-        fooService.testRequiredHasException();
+        //fooService.testRequiredHasException();
 
         // SUPPORT传播属性-调用者无事务,不抛异常 被调用者有异常
         //fooService.testSupportsHasException();
@@ -72,7 +72,7 @@ public class BarServiceImpl implements BarService {
         //fooService.testMandatoryHasException();
 
         // REQUIRES_NEW传播属性-调用者无事务,不抛异常 被调用者有异常
-        //fooService.testRequiresNewHasException();
+        fooService.testRequiresNewHasException();
 
         // NOT_SUPPORTED传播属性-调用者无事务,不抛异常 被调用者有异常
         //fooService.testNotSupportHasException();
