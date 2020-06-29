@@ -1,2 +1,2 @@
-# book-practice
-关于书籍的一些联系
+# technology-practice
+关于技术的一些练习
