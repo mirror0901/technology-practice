@@ -1,5 +1,5 @@
-### book-practice
-关于书籍的一些练习
+### technology-practice
+关于技术点的一些练习
  
 ##### jvm
 ````
