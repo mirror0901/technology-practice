@@ -1,0 +1,93 @@
+参考 https://www.cnblogs.com/gongcong/p/9261204.html
+
+synchronized修饰实例方法及实例方法内的代码块时对应的是对象锁
+synchronized修饰类方法及类方法内的代码块时对应的是类锁
+synchronized分别修饰实例方法和类方法使用的是不同的锁
+
+Lock锁
+    Lock作为Java提供的一个接口，功能类似synchronized同步，但是功能比synchronized强大，可以精细化控制读写、可以响应中断、可以实现线程公平获取锁等；
+    1.Lock接口的6个方法
+        lock作为接口提供了公共抽象方法,方法功能分为获取锁、释放锁、新建锁条件3类，
+        其中获取锁分 阻塞式获取 和 分阻塞 获取， 阻塞式获取分为能够响应中断式和不能够响应中断式；
+            1. lock(): 获取锁、阻塞式、不响应中断
+    　　　　2. tryLock(): 获取锁、非阻塞式
+    　　　　3. tryLock(time, timeUnit) throws InterruptedException：获取锁、定时阻塞、响应中断
+    　　　　4. lockInterruptibly() throws InterruptedException：获取锁、阻塞式、响应中断
+    　　　　5. unLock()：释放锁
+    　　　　6. newCondition()：新建锁条件，Condition有await和signal方法，功能类似Object的wait和notify方法，常用于线程协作
+
+    2. 锁分类
+　　　　根据Lock实现类的特性，锁可以分为可重入锁、公平锁、中断锁、读写锁；
+
+        1. 可重入锁：同一把锁可以锁多个临界区代码块，线程获取到锁后，可以执行同一把锁锁定的所有临界区； synchronized和Lock都是可重入锁；
+        2. 公平锁：多个线程因获取锁进入阻塞状态时，阻塞时间最长的线程优先获取到锁叫做公平锁，所有阻塞线程均等机会获取到锁叫做非公平锁；
+        synchronized是非公平锁，Lock默认是非公平锁，可以通过设置参数改为公平锁；
+        3. 中断锁：线程在因获取锁而进入阻塞状态时，中断锁能够响应中断退出阻塞，非中断锁进入阻塞后除非获取到锁否则无法退出阻塞状态；
+        synchronized是非中断锁，Lock不同的获取锁方法可以响应中断也可以不响应中断
+        4. 读写锁：线程安全问题是因为不同的线程同时更新共享资源，如果所有线程只是读取共享资源的数据不会有线程安全问题，读写锁可以多个线程同时读，但不能同时读写；
+        （A线程获取读锁时其他线程可以同时读，A线程获取写锁时其他线程只能等待）
+
+synchronized和Lock对比
+    synchronized是Java的关键字，Lock是Java中的一个接口，有不同的实现类；
+    synchronized：
+    　　1. 释放锁的情况：临界区代码执行完毕，临界区代码执行过程发生异常；
+    　　2. 线程因synchronized同步阻塞时不能响应中断，也就是线程一旦因synchronized进入同步阻塞状态只能等待其他线程释放锁，没有其他办法；
+
+     Lock：
+    　　1. Lock锁需要手动释放；
+    　　2. Lock可以通过tryLock返回获取锁的结果；
+    　　3. Lock可以通过lockInterruptibly在因获取不到锁进入同步阻塞时响应中断
+
+    说明：
+    　　1. 响应中断指在线程因获取锁失败进入同步阻塞状态时是否能够中断阻塞状态，
+        无论synchronized还是Lock获取锁后执行过程因调用wait和Condition的await方法进入等待阻塞时都能构响应中断；
+    　　2. 线程安全产生的根源是不同的线程访问相同的内存资源，如果只是查看不会产生安全问题，同时更新内存资源才会产生安全问题，
+        那么就可以通过将共享对象改造为不可变对象来避免线程安全；
+    　　3. 不可变对象的一般特点：a.所有的字段为final、private b.没有set方法 c.final修饰类，不允许扩展
+
+线程协作和线程安全关系
+    线程协作指不同线程驱动的任务相互依赖，依赖一般就是对共享资源的依赖；
+    有线程协作一定会有资源共享，有共享就有竞争，有竞争就会有线程安全问题；
+    线程安全是通过synchronized和Lock机制来保证线程安全；
+    线程协作通过Object的wait/notify方法，Thread的join/sleep/interrupt/yield，拥塞队列来实现；
+    线程安全和线程协作编码时可以互不依赖，但是更通用的场景是线程协作要添加线程安全的机制；
+
+    join：线程联合
+        join为Thread的实例方法，用于线程联合，在线程thread1中调用线程thread2.join()方法，thread1会让出CPU使用进入阻塞直到thread2线程执行结束；
+        如果调用thread2.join指定时间参数，则表示thread1的最多等待时间；
+        　　说明：如果join和synchronized同时使用时需要注意，线程thread1中调用thread2.join方法，thread1只让出CPU使用但不释放锁，这很容易死锁；
+
+    yield：线程切换
+        yield为Thread静态方法，线程放弃继续执行，让出cpu释放锁进入可运行状态
+        说明：执行yield只是让线程暂停一下，让系统重新调度，大多数情况，yield后系统会继续选择当前线程执行（所以不好验证）
+
+    sleep：线程休眠
+        sleep为Thread的类方法，让当前线程让出CPU使用并休眠参数指定的时间
+        说明：类似join方法，线程休眠期间只会让出cpu使用不会释放任何锁
+
+Object的wait/notify
+    wait和notify是Object的实例方法，和线程安全、线程协作都有关系,线程安全指wait和notify方法只能在synchronized临界区内调用，
+    线程协作指wait使当前线程释放cpu和锁进入等待阻塞，notify/notifyAll唤醒因调用当前对象wait方法进入等待阻塞的线程;
+
+    说明：
+    　　1. wait可以设置超时等待时间，超时后自己进入同步阻塞状态，无需其他线程唤醒
+    　　2. notify/notifyAll唤醒当前对象上的等待线程，使等待线程进入同步阻塞状态,同步阻塞状态的线程均等机会获取锁（恰恰说明synchronized的锁是非公平锁），notify()是随机唤醒单个线程，而notifyAll()是唤醒所有的线程。
+    　　3. wait和notify只能在synchronized临界区内调用，并且调用对象只能是进入synchronized临界区的锁的归属对象，否则IllegalMonitorStateException
+    　　　　出错场景1:synchronized(XX.class){wait()} -->> 获得类锁没有取得对象锁
+    　　　　出错场景2:synchronized(a){wait()} -->> 获得的是a对象的锁，而不是当前对象this的锁
+    　　　　出错场景3:synchronized(this){a.wait()} -->> 获得的当前对象的锁，而不是a对象的锁
+    　　4.sleep和wait的异同：
+    　　　　sleep()不释放，wait()释放锁；
+    　　　　都可以响应interrupt()中断，从而使线程立刻抛出InterruptedException（但不建议使用该方法）
+
+Thread的中断方法
+     每个线程都有一个标志位，标志当前线程是否中断，Thread类中有获取当前线程中断状态及设置当前线程为中断状态的方法；
+     interrupted：Thread的类方法，获取当前线程的中断状态，并重置当前线程为非中断状态；
+     isInterrupted：Thread的实例方法，获取当前线程的中断状态；
+     interrupt：Thread的实例方法，设置当前线程为中断状态；（只是单纯的设置线程的中断标志，至于线程中断后做什么在线程驱动的任务中可以通过捕获异常或获取中断状态后自己定义）
+
+     说明：
+     　　1. 如果线程因wait/sleep/join方法进入等待阻塞，或因调用Lock对象的lockInterrupity/tryLock(time)进入同步阻塞状态，其他线程中调用interrupt方法会导致阻塞线程中抛出InterruptException异常；
+     　　2. 阻塞状态的线程抛出InterruptException时会重置中断标志（标志位false）；
+     　　3. 类方法interrupted获取中断状态后会清除中断状态，实例方法isInterrupted()只是获取中断状态；
+     　　4. 除使用interrupt方法中断线程外，还有2种方式中止线程执行，a. 退出标志使线程正常退出(线程通信)；b.使用stop()方法强行终止线程（不推荐，可能发生不可预料的结果）
