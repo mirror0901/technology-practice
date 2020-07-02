@@ -1,6 +1,6 @@
 package com.mirror.base.event;
 
-import com.mirror.base.BaseApplication;
+import com.mirror.base.Application;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @ActiveProfiles("dev")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = BaseApplication.class)
+@SpringBootTest(classes = Application.class)
 public class ObserverTest {
 
     @Autowired
